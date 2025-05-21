@@ -18,7 +18,7 @@ public class InvoiceEntity
 
     public DateTime DueDate { get; set; } = DateTime.Now.AddDays(30);
 
-    public int TotalAmount { get; set; }
+    public decimal TotalAmount { get; set; }
 
     public string Status { get; set; } = null!;
     
