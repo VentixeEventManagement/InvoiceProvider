@@ -2,20 +2,14 @@
 
 public class InvoiceRequest
 {
-
-    public string InvoiceId { get; set; } = null!;
+    //Ta emot data från Booking - när en bokning gjorts. Detta ska jag kunna mappa mot Fabrice Booking provider
 
     public string BookingId { get; set; } = null!;
 
     public string UserId { get; set; } = null!;
 
     public string EventId { get; set; } = null!;
-    public DateTime IssueDate { get; set; }
 
-    public DateTime DueDate { get; set; }
-
-    public int TotalAmount { get; set; }
-
-    public string Status { get; set; } = null!;
+    public decimal TotalAmount { get; set; }
 
 }
