@@ -17,7 +17,6 @@ public class InvoiceController(IInvoiceService invoiceService) : ControllerBase
     [HttpPost("create")]
     [SwaggerOperation(Summary = "Creates an invoice")]
     [SwaggerResponse(400, "Invoice Request contained invalid or missing data")]
-    //Uppdtera här Hans lektion 20 maj 11:00
     [SwaggerRequestExample(typeof(InvoiceRequest), typeof(InvoiceRequestExample))] // Exempel på hur request ser ut
 
     public async Task<IActionResult> CreateInvoice([FromBody] InvoiceRequest request)
@@ -110,25 +109,25 @@ public class InvoiceController(IInvoiceService invoiceService) : ControllerBase
 
     
     //Exempel hur getall med token ser ut - i inspelnig visar Hans exempel hur det ser ut i React lektion 9 maj kl 12:09. lägg inne i funktionen showinvoices.
-    [HttpGet("getAllWithToken")]
+    //[HttpGet("getAllWithToken")]
 
-    public async Task<IActionResult> GetAllInvoicesWithToken()
-    {
-        var authorization = Request.Headers.Authorization[0];
-        var token = authorization!.Split(" ")[1];   
+    //public async Task<IActionResult> GetAllInvoicesWithToken()
+    //{
+    //    var authorization = Request.Headers.Authorization[0];
+    //    var token = authorization!.Split(" ")[1];   
 
-        using var http = new HttpClient();
-        var response = await http.PostAsJsonAsync($"https://tokenservice.azurewebsites/api//validatetoken", new { token });
+    //    using var http = new HttpClient();
+    //    var response = await http.PostAsJsonAsync($"https://tokenservice.azurewebsites/api//validatetoken", new { token });
 
-        if (!response.IsSuccessStatusCode)
-        {
-            return Unauthorized();
-        }
+    //    if (!response.IsSuccessStatusCode)
+    //    {
+    //        return Unauthorized();
+    //    }
 
 
-        var invoices = await _invoiceService.GetAllAsync();
-        return Ok(invoices);
-    }
+    //    var invoices = await _invoiceService.GetAllAsync();
+    //    return Ok(invoices);
+    //}
 
     
 
