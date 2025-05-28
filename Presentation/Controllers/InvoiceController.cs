@@ -6,13 +6,13 @@ using Swashbuckle.AspNetCore.Annotations;
 using Swashbuckle.AspNetCore.Filters;
 
 namespace Presentation.Controllers;
-//[Produces("application/json")]
-//[Consumes("application/json")]
+
 [Route("api/[controller]")]
 [ApiController]
 public class InvoiceController(IInvoiceService invoiceService) : ControllerBase
 {
     private readonly IInvoiceService _invoiceService = invoiceService;
+    private readonly InvoiceCreatedSenderService _invoiceCreatedSenderService;
 
     [HttpPost("create")]
     [SwaggerOperation(Summary = "Creates an invoice")]
@@ -26,8 +26,8 @@ public class InvoiceController(IInvoiceService invoiceService) : ControllerBase
             return BadRequest(ModelState);
         }
 
-        //Skapa en Invoice från request från BookingProvider
-        //Matcha den här med Fabrice modell
+        //Skapar en Invoice från request från BookingProvider
+        //Matchar den här med Fabrice modell
         var invoice = new Invoice
         {
             InvoiceId = Guid.NewGuid().ToString(), // Genererar här ett ID för fakturan
@@ -41,9 +41,43 @@ public class InvoiceController(IInvoiceService invoiceService) : ControllerBase
         };
 
         var result = await _invoiceService.CreateAsync(invoice);
+
+        //Anropar att skicka till serviceBus
+        await _invoiceCreatedSenderService.SendMessageAsync(invoice.InvoiceId);
+
         return Ok(result);
 
     }
+
+    [HttpGet("getAllWithToken")]
+    [SwaggerOperation(Summary = "Returns a list of invoices")]
+
+    public async Task<IActionResult> GetAllInvoicesWithToken()
+    {
+        var authorization = Request.Headers.Authorization[0];
+        var token = authorization!.Split(" ")[1];
+
+        using var http = new HttpClient();
+        var response = await http.PostAsJsonAsync($"https://tokenservice.jfventixeeventmanagement.azurewebsites/api/validatetoken", new { token });
+
+        if (!response.IsSuccessStatusCode)
+        {
+            return Unauthorized();
+        }
+
+
+        var invoices = await _invoiceService.GetAllAsync();
+        foreach (var invoice in invoices)
+        {
+            if (invoice.Status == "Unpaid" && invoice.DueDate < DateTime.UtcNow)
+            {
+                invoice.Status = "Overdue";
+            }
+
+        }
+        return Ok(invoices);
+    }
+
 
     [HttpGet("getAll")]
     [SwaggerOperation(Summary = "Returns a list of invoices")]
@@ -107,28 +141,9 @@ public class InvoiceController(IInvoiceService invoiceService) : ControllerBase
         return Ok(result);
     }
 
-    
-    //Exempel hur getall med token ser ut - i inspelnig visar Hans exempel hur det ser ut i React lektion 9 maj kl 12:09. lägg inne i funktionen showinvoices.
-    //[HttpGet("getAllWithToken")]
-
-    //public async Task<IActionResult> GetAllInvoicesWithToken()
-    //{
-    //    var authorization = Request.Headers.Authorization[0];
-    //    var token = authorization!.Split(" ")[1];   
-
-    //    using var http = new HttpClient();
-    //    var response = await http.PostAsJsonAsync($"https://tokenservice.azurewebsites/api//validatetoken", new { token });
-
-    //    if (!response.IsSuccessStatusCode)
-    //    {
-    //        return Unauthorized();
-    //    }
 
 
-    //    var invoices = await _invoiceService.GetAllAsync();
-    //    return Ok(invoices);
-    //}
 
-    
+
 
 }

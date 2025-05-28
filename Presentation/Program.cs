@@ -13,13 +13,15 @@ try
     {
         options.AddPolicy("AllowAll", policy =>
         {
-            //policy.WithOrigins("http://localhost:5175") // frontend-port
             policy.AllowAnyOrigin()
                 .AllowAnyHeader()
                 .AllowAnyMethod()
                 .AllowAnyOrigin();
         });
     });
+
+    builder.Services.AddSingleton<InvoiceCreatedSenderService>();
+
     builder.Services.AddControllers();
     builder.Services.AddOpenApi();
     builder.Services.AddSwaggerGen(o =>

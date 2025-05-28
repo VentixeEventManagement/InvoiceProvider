@@ -2,7 +2,7 @@
 
 public class InvoiceRequest
 {
-    //Ta emot data från Booking - när en bokning gjorts. Detta ska jag kunna mappa mot Fabrice Booking provider
+    //Ta emot data från Booking - när en bokning gjorts. Detta ska föras över från Fabrices modell.
 
     public string BookingId { get; set; } = null!;
 
