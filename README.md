@@ -3,6 +3,20 @@
 Detta är ett back end delsystem i en mikroservicestruktur för hantering av fakturor (invoices). Projektet är ett ASP.NET Core Web API och använder .NET 9 och Entity Framework Core samt Swagger för API-dokumentation.
 Användargränsnittet finns i React applicationen VentixeEventManegemanetFrontEnd i tillhörande organisation "VentixeEventManagement".
 
+Aktivitetsdiagram - Skapa faktura
+
+
+![image](https://github.com/user-attachments/assets/97fe13f9-7b55-4011-9ded-2fbde1338a3b)
+
+
+
+Sekvensdiagram - Hämta fakturor
+
+
+![image](https://github.com/user-attachments/assets/21ca584f-bc14-4446-987f-76aa11b4c98f)
+
+
+
 ## Kom igång
 
 1. **Kloning av repo**
