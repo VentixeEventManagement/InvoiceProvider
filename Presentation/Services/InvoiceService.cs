@@ -56,7 +56,23 @@ public class InvoiceService(DataContext context) : IInvoiceService
             return null;
         }
     }
+    public async Task<EmailRequest> GenerateInvoiceEmailAsync(string invoiceId, string email)
+    {
+        var invoice = await GetByIdAsync(invoiceId);
+        if (invoice == null)
+            return null;
 
+        var emailRequest = new EmailRequest
+        {
+            //Hämta in email 
+            Recipients = [email],
+            Subject = $"Invoice {invoice.InvoiceId}",
+            PlainText = $"Thank you for your purchase, here is your invoice:  INV{invoice.InvoiceId}",
+            Html = $"<html><body><h1>INV{invoice.InvoiceId}</h1><p> Here is your invoice </p><p>Total Amount: {invoice.TotalAmount}</p><p>Due Date: {invoice.DueDate}</p></body></html>"
+
+        };
+        return emailRequest;
+    }
 
     //READ
 
